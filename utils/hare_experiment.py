@@ -3,9 +3,16 @@ import numpy as np
 from scipy.stats import norm
 
 
-def bimodal_cdf(m1, m2, mu1, mu2, w1=0.5, w2=0.5, n=10**5):  # TODO add random choice instead of weights
+def bimodal_cdf(m1, m2, mu1, mu2, w1=0.5, n=10**5):  # TODO add random choice instead of weights
+    w2 = 1 - w1
     hist, bin_edges = np.histogram(
-            np.concatenate([norm.rvs(loc=m1, scale=mu1, size=int(n*w1)), norm.rvs(loc=m2, scale=mu2, size=int(n*w2))]),
+            np.clip(
+                np.concatenate(
+                    [norm.rvs(loc=m1, scale=mu1, size=int(n*w1)), norm.rvs(loc=m2, scale=mu2, size=int(n*w2))]
+                ),
+                0,
+                255,
+            ),
             bins=256,
             density=True
         )
